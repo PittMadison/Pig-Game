@@ -1,4 +1,4 @@
-var scores, roundScore, activePlayer, gamePlaying;
+var scores, roundScore, activePlayer, gamePlaying, sixCounter;
 
 init();
 document.querySelector('.btn-roll').addEventListener('click', function () {
@@ -6,20 +6,30 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
     if (gamePlaying) {
         var dice = Math.floor(Math.random() * 6) + 1;
 
+        dice === 6 ? sixCounter ++ : sixCounter = 0;
+        
+        console.log(dice, sixCounter)
+
+
         var diceDOM = document.querySelector('.dice');
         diceDOM.src = './img/dice-' + dice + '.png';
         diceDOM.style.display = 'block';
 
-        if (dice !== 1) {
+        if (dice !== 1 && sixCounter !== 2) {
+   
             roundScore += dice;
             document.querySelector('#current-' + activePlayer).textContent = roundScore;
-        } else {
 
+        } else  if (sixCounter === 2) {
+
+            document.getElementById('score-' + activePlayer).textContent = '0';
+            scores[activePlayer] = 0;
             nextPlayer();
 
+        } else {
+            nextPlayer();            
         }
     }
-
 });
 
 document.querySelector('.btn-hold').addEventListener('click', function () {
@@ -28,7 +38,7 @@ document.querySelector('.btn-hold').addEventListener('click', function () {
         scores[activePlayer] += Number(roundScore);
         document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
 
-        if (scores[activePlayer] >= 10) {
+        if (scores[activePlayer] >= 30) {
 
             gamePlaying = false;
 
@@ -48,6 +58,7 @@ function nextPlayer() {
 
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
     roundScore = 0;
+    sixCounter = 0;
 
     document.getElementById('current-0').textContent = '0';
     document.getElementById('current-1').textContent = '0';
@@ -63,6 +74,7 @@ function init() {
     scores = [0, 0];
     activePlayer = 0;
     roundScore = 0;
+    sixCounter = 0;
 
     gamePlaying = true;
 
